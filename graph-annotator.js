@@ -208,7 +208,8 @@ GraphAnnotator.prototype._initializeLayers = function(imageURL, callback) {
     _this.canvas.style.position = 'absolute';
     _this.canvas.style.left = '0px';
     _this.canvas.style.top = '0px';
-    _this.canvas.style.cursor = 'pointer';
+    //_this.canvas.style.cursor = 'pointer';
+    _this.canvas.style.cursor = 'crosshair';
     _this.container.appendChild(_this.canvas);
     _this.canvas.oncontextmenu = function() { return false; };
     callback.call(_this);
@@ -253,7 +254,7 @@ GraphAnnotator.prototype._findNode = function(position) {
     // Find the nearest node.
     var minDistance = Infinity;
     for (i = 0; i < this.graph.nodes.length; ++i) {
-      if (this.graph.nodes[i].position !== undefined) {
+      if (this.graph.nodes[i].position) {
         var nodePosition = this.graph.nodes[i].position,
             distance = Math.sqrt(
             Math.pow(nodePosition[0] - position[0], 2) +
@@ -290,19 +291,22 @@ GraphAnnotator.prototype._renderGraph = function() {
       i;
   this.canvas.width = this.image.width;
   context = this.canvas.getContext('2d');
+  context.globalAlpha = 0.8;
   for (i = 0; i < this.graph.edges.length; ++i) {
     var edge = this.graph.edges[i],
         node1 = this.graph.nodes[edge.index[0]],
         node2 = this.graph.nodes[edge.index[1]];
     if (node1.position === undefined || node2.position === undefined)
       continue;
-    context.lineWidth = edge.lineWidth || this.lineWidth;
-    context.strokeStyle = formatRGB(edge.color || this.edgeColor);
-    context.beginPath();
-    context.moveTo(node1.position[0], node1.position[1]);
-    context.lineTo(node2.position[0], node2.position[1]);
-    context.closePath();
-    context.stroke();
+    if (node1.position && node2.position) {
+      context.lineWidth = edge.lineWidth || this.lineWidth;
+      context.strokeStyle = formatRGB(edge.color || this.edgeColor);
+      context.beginPath();
+      context.moveTo(node1.position[0], node1.position[1]);
+      context.lineTo(node2.position[0], node2.position[1]);
+      context.closePath();
+      context.stroke();
+    }
   }
   for (i = 0; i < this.graph.nodes.length; ++i) {
     var node = this.graph.nodes[i];
