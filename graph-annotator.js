@@ -209,7 +209,8 @@ GraphAnnotator.prototype._initializeLayers = function(imageURL, callback) {
     _this.canvas.style.left = '0px';
     _this.canvas.style.top = '0px';
     //_this.canvas.style.cursor = 'pointer';
-    _this.canvas.style.cursor = 'crosshair';
+    //_this.canvas.style.cursor = 'crosshair';
+    _this.canvas.style.cursor = 'copy';
     _this.container.appendChild(_this.canvas);
     _this.canvas.oncontextmenu = function() { return false; };
     callback.call(_this);
