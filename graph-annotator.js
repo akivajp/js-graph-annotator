@@ -46,7 +46,8 @@
 //       edgeColor: [  0, 255,   0]
 //     });
 //
-// Kota Yamaguchi 2013
+// Original Author: Kota Yamaguchi 2013
+// Modified by: Akiva Miura 2018
 
 // GraphAnnotator class constructor.
 //
@@ -74,6 +75,8 @@
 //  * `nodeDiameter` - Diameter of nodes in pixels.
 //  * `hitDistance` - Diameter in pixels to decide whether to select a closest
 //                    node.
+//  * `max_width` - TBA
+//  * `max_height` - TBA
 //
 // Following is the required graph structure.
 //
@@ -93,6 +96,20 @@ GraphAnnotator = function(imageURL, options) {
   this._initializeLayers(imageURL, function() {
     if (options.onchange)
       this._initializeEvents(options);
+    this.ratio = 1.0;
+    if (options.max_width > 0) {
+      if (this.image.width > options.max_width) {
+        this.ratio = options.max_width / this.image.width;
+      }
+    }
+    if (options.max_height > 0) {
+      if (this.image.height > options.max_height) {
+        this.ratio = Math.min(this.ratio, options.max_height / this.image.height);
+      }
+    }
+    this.image.width = this.image.width * this.ratio;
+    this.canvas.width = this.canvas.width * this.ratio;
+    this.canvas.height = this.canvas.height * this.ratio;
     this._renderGraph();
     if (options.onload)
       options.onload.call(this);
@@ -226,9 +243,10 @@ GraphAnnotator.prototype._initializeEvents = function(options) {
     if (mousestatus === false) {
       mousestatus = true;
       currentNode = _this._findNode(_this._getPosition(event));
-      _this._updateNode(event, currentNode);
+      //_this._updateNode(event, currentNode);
       if (options.onselect && currentNode !== null)
         options.onselect.call(_this, currentNode);
+      _this._updateNode(event, currentNode);
       document.onselectstart = function() { return false; };
     }
   });
@@ -290,6 +308,7 @@ GraphAnnotator.prototype._renderGraph = function() {
   }
   var context,
       i;
+  var ratio = this.ratio;
   this.canvas.width = this.image.width;
   context = this.canvas.getContext('2d');
   context.globalAlpha = 0.8;
@@ -303,8 +322,10 @@ GraphAnnotator.prototype._renderGraph = function() {
       context.lineWidth = edge.lineWidth || this.lineWidth;
       context.strokeStyle = formatRGB(edge.color || this.edgeColor);
       context.beginPath();
-      context.moveTo(node1.position[0], node1.position[1]);
-      context.lineTo(node2.position[0], node2.position[1]);
+      //context.moveTo(node1.position[0], node1.position[1]);
+      context.moveTo(node1.position[0] * ratio, node1.position[1] * ratio);
+      //context.lineTo(node2.position[0], node2.position[1]);
+      context.lineTo(node2.position[0] * ratio, node2.position[1] * ratio);
       context.closePath();
       context.stroke();
     }
@@ -315,8 +336,14 @@ GraphAnnotator.prototype._renderGraph = function() {
       context.lineWidth = node.lineWidth || this.lineWidth;
       context.strokeStyle = formatRGB(node.color || this.nodeColor);
       context.beginPath();
-      context.arc(node.position[0],
-                  node.position[1],
+      //context.arc(node.position[0],
+      //            node.position[1],
+      //            node.diameter || this.nodeDiameter,
+      //            0,
+      //            Math.PI*2,
+      //            false);
+      context.arc(node.position[0] * ratio,
+                  node.position[1] * ratio,
                   node.diameter || this.nodeDiameter,
                   0,
                   Math.PI*2,
@@ -333,7 +360,8 @@ GraphAnnotator.prototype._getPosition = function(event) {
       y = event.pageY - this.container.offsetTop + this.container.scrollTop;
   x = Math.max(Math.min(x, this.canvas.width - 1), 0);
   y = Math.max(Math.min(y, this.canvas.height - 1), 0);
-  return [x, y];
+  //return [x, y];
+  return [x / this.ratio, y / this.ratio];
 };
 
 // Update a node.
