@@ -273,11 +273,16 @@ GraphAnnotator.prototype._findNode = function(position) {
     // Find the nearest node.
     var minDistance = Infinity;
     for (i = 0; i < this.graph.nodes.length; ++i) {
-      if (this.graph.nodes[i].position) {
+      var node = this.graph.nodes[i];
+      if (node.active == false) {
+        continue;
+      }
+      if (node.position) {
         var nodePosition = this.graph.nodes[i].position,
             distance = Math.sqrt(
             Math.pow(nodePosition[0] - position[0], 2) +
             Math.pow(nodePosition[1] - position[1], 2));
+            distance = distance * this.ratio;
         if (distance <= this.hitDistance && distance <= minDistance) {
           minDistance = distance;
           candidate = i;
@@ -288,7 +293,11 @@ GraphAnnotator.prototype._findNode = function(position) {
   if (candidate === null) {
     // Find the unfinished node.
     for (i = 0; i < this.graph.nodes.length; ++i) {
-      if (this.graph.nodes[i].position === undefined) {
+      var node = this.graph.nodes[i];
+      if (node.active == false) {
+        continue;
+      }
+      if (node.position === undefined) {
         candidate = i;
         break;
       }
