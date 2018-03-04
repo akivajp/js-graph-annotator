@@ -107,6 +107,8 @@ GraphAnnotator = function(imageURL, options) {
         this.ratio = Math.min(this.ratio, options.max_height / this.image.height);
       }
     }
+    this.width  = this.image.width  * this.ratio;
+    this.height = this.image.height * this.ratio;
     this.image.width = this.image.width * this.ratio;
     this.canvas.width = this.canvas.width * this.ratio;
     this.canvas.height = this.canvas.height * this.ratio;
