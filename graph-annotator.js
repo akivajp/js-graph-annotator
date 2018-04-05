@@ -240,21 +240,28 @@ GraphAnnotator.prototype._initializeLayers = function(imageURL, callback) {
 GraphAnnotator.prototype._initializeEvents = function(options) {
   var _this = this,
       mousestatus = false,
-      currentNode = null;
+      currentNode = null,
+      pisition = null;
   this.canvas.addEventListener('mousedown', function(event) {
     if (mousestatus === false) {
       mousestatus = true;
-      currentNode = _this._findNode(_this._getPosition(event));
+      position = _this._getPosition(event);
+      currentNode = _this._findNode(position);
       //_this._updateNode(event, currentNode);
       if (options.onselect && currentNode !== null)
-        options.onselect.call(_this, currentNode);
+        options.onselect.call(_this, currentNode, position);
       _this._updateNode(event, currentNode);
       document.onselectstart = function() { return false; };
     }
   });
   this.canvas.addEventListener('mousemove', function(event) {
-    if (mousestatus === true)
+    if (mousestatus === true) {
+      if (options.onmove) {
+        position = _this._getPosition(event);
+        options.onmove.call(_this, currentNode, position);
+      }
       _this._updateNode(event, currentNode);
+    }
   });
   window.addEventListener('mouseup', function(event) {
     if (mousestatus === true) {
