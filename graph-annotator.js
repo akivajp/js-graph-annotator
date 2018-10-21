@@ -85,37 +85,37 @@
 //       edges: [{index: [0, 1]}, {index: [1, 2]}, ...]
 //     }
 GraphAnnotator = function(imageURL, options) {
-  options = options || {};
-  this.graph = options.graph || {nodes: [{}, {}], edges: [{index: [0, 1]}]};
-  this.lineWidth = options.lineWidth || 3;
-  this.nodeColor = options.nodeColor || [0, 255, 255];
-  this.edgeColor = options.edgeColor || [0, 255, 255];
-  this.nodeDiameter = options.nodeDiameter || 3;
-  this.hitDistance = options.hitDistance || 10;
-  this._initializeContainer(options);
-  this._initializeLayers(imageURL, function() {
-    if (options.onchange)
-      this._initializeEvents(options);
-    this.ratio = 1.0;
-    if (options.max_width > 0) {
-      if (this.image.width > options.max_width) {
-        this.ratio = options.max_width / this.image.width;
-      }
-    }
-    if (options.max_height > 0) {
-      if (this.image.height > options.max_height) {
-        this.ratio = Math.min(this.ratio, options.max_height / this.image.height);
-      }
-    }
-    this.width  = this.image.width  * this.ratio;
-    this.height = this.image.height * this.ratio;
-    this.image.width = this.image.width * this.ratio;
-    this.canvas.width = this.canvas.width * this.ratio;
-    this.canvas.height = this.canvas.height * this.ratio;
-    this._renderGraph();
-    if (options.onload)
-      options.onload.call(this);
-  });
+    options = options || {};
+    this.graph = options.graph || {nodes: [{}, {}], edges: [{index: [0, 1]}]};
+    this.lineWidth = options.lineWidth || 3;
+    this.nodeColor = options.nodeColor || [0, 255, 255];
+    this.edgeColor = options.edgeColor || [0, 255, 255];
+    this.nodeDiameter = options.nodeDiameter || 3;
+    this.hitDistance = options.hitDistance || 10;
+    this._initializeContainer(options);
+    this._initializeLayers(imageURL, function() {
+        if (options.onchange)
+            this._initializeEvents(options);
+        this.ratio = 1.0;
+        if (options.max_width > 0) {
+            if (this.image.width > options.max_width) {
+                this.ratio = options.max_width / this.image.width;
+            }
+        }
+        if (options.max_height > 0) {
+            if (this.image.height > options.max_height) {
+                this.ratio = Math.min(this.ratio, options.max_height / this.image.height);
+            }
+        }
+        this.width  = this.image.width  * this.ratio;
+        this.height = this.image.height * this.ratio;
+        this.image.width = this.image.width * this.ratio;
+        this.canvas.width = this.canvas.width * this.ratio;
+        this.canvas.height = this.canvas.height * this.ratio;
+        this._renderGraph();
+        if (options.onload)
+            options.onload.call(this);
+    });
 };
 
 // Set node attributes.
@@ -135,19 +135,19 @@ GraphAnnotator = function(imageURL, options) {
 // * `diameter` - Diameter of the node.
 //
 GraphAnnotator.prototype.setNodeAttributes = function(index, attributes) {
-  var start = 0,
-      end = this.graph.nodes.length;
-  if (attributes === undefined)
-    attributes = index;
-  else if (index !== null) {
-    start = index;
-    end = index + 1;
-  }
-  for (var i = start; i < end; ++i)
-    for (var key in attributes)
-      this.graph.nodes[i][key] = attributes[key];
-  this._renderGraph();
-  return this;
+    var start = 0,
+        end = this.graph.nodes.length;
+    if (attributes === undefined)
+        attributes = index;
+    else if (index !== null) {
+        start = index;
+        end = index + 1;
+    }
+    for (var i = start; i < end; ++i)
+        for (var key in attributes)
+            this.graph.nodes[i][key] = attributes[key];
+    this._renderGraph();
+    return this;
 };
 
 // Set edge attributes.
@@ -166,19 +166,19 @@ GraphAnnotator.prototype.setNodeAttributes = function(index, attributes) {
 // * `lineWidth` - Width of the line.
 //
 GraphAnnotator.prototype.setEdgeAttributes = function(index, attributes) {
-  var start = 0,
-      end = this.graph.nodes.length;
-  if (attributes === undefined)
-    attributes = index;
-  else {
-    start = index;
-    end = index + 1;
-  }
-  for (var i = start; i < end; ++i)
-    for (var key in attributes)
-      this.edges[i][key] = attributes[key];
-  this._renderGraph();
-  return this;
+    var start = 0,
+        end = this.graph.nodes.length;
+    if (attributes === undefined)
+        attributes = index;
+    else {
+        start = index;
+        end = index + 1;
+    }
+    for (var i = start; i < end; ++i)
+        for (var key in attributes)
+            this.edges[i][key] = attributes[key];
+    this._renderGraph();
+    return this;
 };
 
 // Get the next node to annotate.
@@ -186,7 +186,7 @@ GraphAnnotator.prototype.setEdgeAttributes = function(index, attributes) {
 // Return an index of next node to annotate. When finished, return null.
 //
 GraphAnnotator.prototype.getNextNode = function() {
-  return this._findNode(null);
+    return this._findNode(null);
 };
 
 // Get the current graph.
@@ -196,196 +196,212 @@ GraphAnnotator.prototype.getNextNode = function() {
 // annotate.
 //
 GraphAnnotator.prototype.getGraph = function() {
-  return this.graph;
+    return this.graph;
 };
 
 // Private methods.
 
 // Initialize a container.
 GraphAnnotator.prototype._initializeContainer = function(options) {
-  if (options.container)
-    this.container = options.container;
-  else {
-    this.container = document.createElement('div');
-    document.body.appendChild(this.container);
-  }
-  this.container.style.display = 'inline-block';
-  this.container.style.position = 'relative';
-  this.container.innerHTML = '';
+    if (options.container)
+        this.container = options.container;
+    else {
+        this.container = document.createElement('div');
+        document.body.appendChild(this.container);
+    }
+    this.container.style.display = 'inline-block';
+    this.container.style.position = 'relative';
+    this.container.innerHTML = '';
 };
 
 // Create layer elements.
 GraphAnnotator.prototype._initializeLayers = function(imageURL, callback) {
-  var _this = this;
-  this.image = new Image();
-  this.image.src = imageURL;
-  this.container.appendChild(this.image);
-  this.image.onload = function(event) {
-    _this.canvas = document.createElement('canvas');
-    _this.canvas.width = event.target.width;
-    _this.canvas.height = event.target.height;
-    _this.canvas.style.position = 'absolute';
-    _this.canvas.style.left = '0px';
-    _this.canvas.style.top = '0px';
-    //_this.canvas.style.cursor = 'pointer';
-    //_this.canvas.style.cursor = 'crosshair';
-    _this.canvas.style.cursor = 'copy';
-    _this.container.appendChild(_this.canvas);
-    _this.canvas.oncontextmenu = function() { return false; };
-    callback.call(_this);
-  };
+    var _this = this;
+    this.image = new Image();
+    this.image.src = imageURL;
+    this.container.appendChild(this.image);
+    this.image.onload = function(event) {
+        _this.canvas = document.createElement('canvas');
+        _this.canvas.width = event.target.width;
+        _this.canvas.height = event.target.height;
+        _this.canvas.style.position = 'absolute';
+        _this.canvas.style.left = '0px';
+        _this.canvas.style.top = '0px';
+        //_this.canvas.style.cursor = 'pointer';
+        //_this.canvas.style.cursor = 'crosshair';
+        _this.canvas.style.cursor = 'copy';
+        _this.container.appendChild(_this.canvas);
+        _this.canvas.oncontextmenu = function() { return false; };
+        callback.call(_this);
+    };
 };
 
 // Set up events.
 GraphAnnotator.prototype._initializeEvents = function(options) {
-  var _this = this,
-      mousestatus = false,
-      currentNode = null,
-      pisition = null;
-  this.canvas.addEventListener('mousedown', function(event) {
-    if (mousestatus === false) {
-      mousestatus = true;
-      position = _this._getPosition(event);
-      currentNode = _this._findNode(position);
-      //_this._updateNode(event, currentNode);
-      if (options.onselect && currentNode !== null)
-        options.onselect.call(_this, currentNode, position);
-      _this._updateNode(event, currentNode);
-      document.onselectstart = function() { return false; };
-    }
-  });
-  this.canvas.addEventListener('mousemove', function(event) {
-    if (mousestatus === true) {
-      if (options.onmove) {
-        position = _this._getPosition(event);
-        options.onmove.call(_this, currentNode, position);
-      }
-      _this._updateNode(event, currentNode);
-    }
-  });
-  window.addEventListener('mouseup', function(event) {
-    if (mousestatus === true) {
-      _this._updateNode(event, currentNode);
-      mousestatus = false;
-      document.onselectstart = function() { return true; };
-      options.onchange.call(_this, currentNode);
-      currentNode = null;
-    }
-  });
+    var _this = this,
+        mousestatus = false,
+        currentNode = null,
+        pisition = null;
+    this.canvas.addEventListener('mousedown', function(event) {
+        if (mousestatus === false) {
+            mousestatus = true;
+            position = _this._getPosition(event);
+            currentNode = _this._findNode(position);
+            //_this._updateNode(event, currentNode);
+            if (options.onselect && currentNode !== null)
+                options.onselect.call(_this, currentNode, position);
+            _this._updateNode(event, currentNode);
+            document.onselectstart = function() { return false; };
+        }
+    });
+    this.canvas.addEventListener('mousemove', function(event) {
+        if (mousestatus === true) {
+            if (options.onmove) {
+                position = _this._getPosition(event);
+                options.onmove.call(_this, currentNode, position);
+            }
+            _this._updateNode(event, currentNode);
+        }
+    });
+    window.addEventListener('mouseup', function(event) {
+        if (mousestatus === true) {
+            _this._updateNode(event, currentNode);
+            mousestatus = false;
+            document.onselectstart = function() { return true; };
+            options.onchange.call(_this, currentNode);
+            currentNode = null;
+        }
+    });
 };
 
 // Find and update the current node.
 GraphAnnotator.prototype._findNode = function(position) {
-  var candidate = null,
-      i;
-  if (position) {
-    // Find the nearest node.
-    var minDistance = Infinity;
-    for (i = 0; i < this.graph.nodes.length; ++i) {
-      var node = this.graph.nodes[i];
-      if (node.active == false) {
-        continue;
-      }
-      if (node.position) {
-        var nodePosition = this.graph.nodes[i].position,
-            distance = Math.sqrt(
-            Math.pow(nodePosition[0] - position[0], 2) +
-            Math.pow(nodePosition[1] - position[1], 2));
-            distance = distance * this.ratio;
-        if (distance <= this.hitDistance && distance <= minDistance) {
-          minDistance = distance;
-          candidate = i;
+    var candidate = null,
+        i;
+    if (position) {
+        // Find the nearest node.
+        var minDistance = Infinity;
+        for (i = 0; i < this.graph.nodes.length; ++i) {
+            var node = this.graph.nodes[i];
+            if (node.active == false) {
+                continue;
+            }
+            if (node.position) {
+                var nodePosition = this.graph.nodes[i].position,
+                    distance = Math.sqrt(
+                        Math.pow(nodePosition[0] - position[0], 2) +
+                        Math.pow(nodePosition[1] - position[1], 2));
+                distance = distance * this.ratio;
+                if (distance <= this.hitDistance && distance <= minDistance) {
+                    minDistance = distance;
+                    candidate = i;
+                }
+            }
         }
-      }
     }
-  }
-  if (candidate === null) {
-    // Find the unfinished node.
-    for (i = 0; i < this.graph.nodes.length; ++i) {
-      var node = this.graph.nodes[i];
-      if (node.active == false) {
-        continue;
-      }
-      if (node.position === undefined) {
-        candidate = i;
-        break;
-      }
+    if (candidate === null) {
+        // Find the unfinished node.
+        for (i = 0; i < this.graph.nodes.length; ++i) {
+            var node = this.graph.nodes[i];
+            if (node.active == false) {
+                continue;
+            }
+            if (node.position === undefined) {
+                candidate = i;
+                break;
+            }
+        }
     }
-  }
-  return candidate;
+    return candidate;
 };
 
 // Render a graph.
 GraphAnnotator.prototype._renderGraph = function() {
-  // Get a format RGB string.
-  function formatRGB(rgb) {
-    if (typeof rgb === 'object' && rgb.length === 3)
-      return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
-    else
-      return rgb;
-  }
-  var context,
-      i;
-  var ratio = this.ratio;
-  this.canvas.width = this.image.width;
-  context = this.canvas.getContext('2d');
-  context.globalAlpha = 0.8;
-  for (i = 0; i < this.graph.edges.length; ++i) {
-    var edge = this.graph.edges[i],
-        node1 = this.graph.nodes[edge.index[0]],
-        node2 = this.graph.nodes[edge.index[1]];
-    if (node1.position === undefined || node2.position === undefined)
-      continue;
-    if (node1.position && node2.position) {
-      context.lineWidth = edge.lineWidth || this.lineWidth;
-      context.strokeStyle = formatRGB(edge.color || this.edgeColor);
-      context.beginPath();
-      //context.moveTo(node1.position[0], node1.position[1]);
-      context.moveTo(node1.position[0] * ratio, node1.position[1] * ratio);
-      //context.lineTo(node2.position[0], node2.position[1]);
-      context.lineTo(node2.position[0] * ratio, node2.position[1] * ratio);
-      context.closePath();
-      context.stroke();
+    // Get a format RGB string.
+    function formatRGB(rgb) {
+        if (typeof rgb === 'object' && rgb.length === 3)
+            return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+        else
+            return rgb;
     }
-  }
-  for (i = 0; i < this.graph.nodes.length; ++i) {
-    var node = this.graph.nodes[i];
-    if (node.position) {
-      context.lineWidth = node.lineWidth || this.lineWidth;
-      context.strokeStyle = formatRGB(node.color || this.nodeColor);
-      context.beginPath();
-      //context.arc(node.position[0],
-      //            node.position[1],
-      //            node.diameter || this.nodeDiameter,
-      //            0,
-      //            Math.PI*2,
-      //            false);
-      context.arc(node.position[0] * ratio,
-                  node.position[1] * ratio,
-                  node.diameter || this.nodeDiameter,
-                  0,
-                  Math.PI*2,
-                  false);
-      context.closePath();
-      context.stroke();
+    var context,
+        i;
+    var ratio = this.ratio;
+    this.canvas.width = this.image.width;
+    context = this.canvas.getContext('2d');
+    context.globalAlpha = 0.8;
+    for (i = 0; i < this.graph.edges.length; ++i) {
+        var edge = this.graph.edges[i];
+        var node1 = this.graph.nodes[edge.index[0]];
+        var node2 = this.graph.nodes[edge.index[1]];
+        var node3 = this.graph.nodes[edge.offset];
+        if (node1.position === undefined || node2.position === undefined)
+            continue;
+        if (node1.position && node2.position) {
+            if (this.fill && node3 && node3.position) {
+                context.lineWidth = 1;
+                context.strokeStyle = formatRGB(edge.color || this.edgeColor);
+                context.fillStyle = formatRGB(edge.color || this.edgeColor);
+                context.beginPath();
+                //context.moveTo(node1.position[0], node1.position[1]);
+                context.moveTo(node1.position[0] * ratio, node1.position[1] * ratio);
+                //context.lineTo(node2.position[0], node2.position[1]);
+                context.lineTo(node2.position[0] * ratio, node2.position[1] * ratio);
+                context.lineTo(node3.position[0] * ratio, node3.position[1] * ratio);
+                context.closePath();
+                context.fill();
+                context.stroke();
+            } else {
+                context.lineWidth = edge.lineWidth || this.lineWidth;
+                context.strokeStyle = formatRGB(edge.color || this.edgeColor);
+                context.beginPath();
+                //context.moveTo(node1.position[0], node1.position[1]);
+                context.moveTo(node1.position[0] * ratio, node1.position[1] * ratio);
+                //context.lineTo(node2.position[0], node2.position[1]);
+                context.lineTo(node2.position[0] * ratio, node2.position[1] * ratio);
+                context.closePath();
+                context.stroke();
+            }
+        }
     }
-  }
+    for (i = 0; i < this.graph.nodes.length; ++i) {
+        var node = this.graph.nodes[i];
+        if (node.position) {
+            context.lineWidth = node.lineWidth || this.lineWidth;
+            context.strokeStyle = formatRGB(node.color || this.nodeColor);
+            context.beginPath();
+            //context.arc(node.position[0],
+            //            node.position[1],
+            //            node.diameter || this.nodeDiameter,
+            //            0,
+            //            Math.PI*2,
+            //            false);
+            context.arc(node.position[0] * ratio,
+                node.position[1] * ratio,
+                node.diameter || this.nodeDiameter,
+                0,
+                Math.PI*2,
+                false);
+            context.closePath();
+            context.stroke();
+        }
+    }
 };
 
 // Get a mouse position.
 GraphAnnotator.prototype._getPosition = function(event) {
-  var x = event.pageX - this.container.offsetLeft + this.container.scrollLeft,
-      y = event.pageY - this.container.offsetTop + this.container.scrollTop;
-  x = Math.max(Math.min(x, this.canvas.width - 1), 0);
-  y = Math.max(Math.min(y, this.canvas.height - 1), 0);
-  //return [x, y];
-  return [x / this.ratio, y / this.ratio];
+    var x = event.pageX - this.container.offsetLeft + this.container.scrollLeft,
+        y = event.pageY - this.container.offsetTop + this.container.scrollTop;
+    x = Math.max(Math.min(x, this.canvas.width - 1), 0);
+    y = Math.max(Math.min(y, this.canvas.height - 1), 0);
+    //return [x, y];
+    return [x / this.ratio, y / this.ratio];
 };
 
 // Update a node.
 GraphAnnotator.prototype._updateNode = function(event, currentNode) {
-  if (currentNode !== null) {
-    this.graph.nodes[currentNode].position = this._getPosition(event);
-    this._renderGraph();
-  }
+    if (currentNode !== null) {
+        this.graph.nodes[currentNode].position = this._getPosition(event);
+        this._renderGraph();
+    }
 };
