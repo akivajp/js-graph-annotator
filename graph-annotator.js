@@ -96,26 +96,31 @@ GraphAnnotator = function(imageURL, options) {
     this._initializeLayers(imageURL, function() {
         if (options.onchange)
             this._initializeEvents(options);
-        this.ratio = 1.0;
-        if (options.max_width > 0) {
-            if (this.image.width > options.max_width) {
-                this.ratio = options.max_width / this.image.width;
-            }
-        }
-        if (options.max_height > 0) {
-            if (this.image.height > options.max_height) {
-                this.ratio = Math.min(this.ratio, options.max_height / this.image.height);
-            }
-        }
-        this.width  = this.image.width  * this.ratio;
-        this.height = this.image.height * this.ratio;
-        this.image.width = this.image.width * this.ratio;
-        this.canvas.width = this.canvas.width * this.ratio;
-        this.canvas.height = this.canvas.height * this.ratio;
-        this._renderGraph();
+        this._fitRect(options.max_width, options.max_height);
         if (options.onload)
             options.onload.call(this);
     });
+};
+
+GraphAnnotator.prototype._fitRect = function(max_width, max_height) {
+    this.ratio = this.ratio || 1.0;
+    if (max_width > 0) {
+        if (this.image.width > max_width) {
+            //this.ratio = max_width / this.image.width;
+            this.ratio = max_width / this.image.width;
+        }
+    }
+    if (max_height > 0) {
+        if (this.image.height > max_height) {
+            this.ratio = Math.min(this.ratio, max_height / this.image.height);
+        }
+    }
+    this.width  = this.image.width  * this.ratio;
+    this.height = this.image.height * this.ratio;
+    this.image.width = this.image.width * this.ratio;
+    this.canvas.width = this.canvas.width * this.ratio;
+    this.canvas.height = this.canvas.height * this.ratio;
+    this._renderGraph();
 };
 
 // Set node attributes.
