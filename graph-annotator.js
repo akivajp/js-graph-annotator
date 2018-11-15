@@ -149,8 +149,10 @@ GraphAnnotator.prototype.setNodeAttributes = function(index, attributes) {
         end = index + 1;
     }
     for (var i = start; i < end; ++i)
-        for (var key in attributes)
-            this.graph.nodes[i][key] = attributes[key];
+        if (this.graph.nodes[i]) {
+            for (var key in attributes)
+                this.graph.nodes[i][key] = attributes[key];
+        }
     this._renderGraph();
     return this;
 };
