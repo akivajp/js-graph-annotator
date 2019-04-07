@@ -250,6 +250,9 @@ GraphAnnotator.prototype._initializeEvents = function(options) {
         currentNode = null,
         pisition = null;
     this.canvas.addEventListener('mousedown', function(event) {
+        if (event.button != 0) return;
+        if (event.ctrlKey) return;
+        //console.log(event);
         if (mousestatus === false) {
             mousestatus = true;
             position = _this._getPosition(event);
@@ -262,6 +265,8 @@ GraphAnnotator.prototype._initializeEvents = function(options) {
         }
     });
     this.canvas.addEventListener('mousemove', function(event) {
+        if (event.button != 0) return;
+        //if (event.ctrlKey) return;
         if (mousestatus === true) {
             if (options.onmove) {
                 position = _this._getPosition(event);
@@ -271,6 +276,8 @@ GraphAnnotator.prototype._initializeEvents = function(options) {
         }
     });
     window.addEventListener('mouseup', function(event) {
+        if (event.button != 0) return;
+        //if (event.ctrlKey) return;
         if (mousestatus === true) {
             _this._updateNode(event, currentNode);
             mousestatus = false;
