@@ -344,6 +344,36 @@ GraphAnnotator.prototype._renderGraph = function() {
     this.canvas.width = this.image.width;
     context = this.canvas.getContext('2d');
     context.globalAlpha = 0.8;
+
+    if (this.fill) {
+        last_node = null;
+        for (i = 0; i < this.graph.edges.length; ++i) {
+            var edge = this.graph.edges[i];
+            var node1 = this.graph.nodes[edge.index[0]];
+            var node2 = this.graph.nodes[edge.index[1]];
+            if (node1.position === undefined || node2.position === undefined)
+                continue;
+            if (node1.position && node2.position) {
+                if (node1 !== last_node) {
+                    if (last_node != null) {
+                        context.closePath();
+                        context.fill();
+                    }
+                    context.lineWidth = 1;
+                    context.strokeStyle = formatRGB(edge.color || this.edgeColor);
+                    context.fillStyle = formatRGB(edge.color || this.edgeColor);
+                    context.beginPath();
+                    context.moveTo(node1.position[0] * ratio, node1.position[1] * ratio);
+                }
+                context.lineTo(node2.position[0] * ratio, node2.position[1] * ratio);
+                last_node = node2;
+            }
+        }
+        if (last_node != null) {
+            context.closePath();
+            context.fill();
+        }
+    }
     for (i = 0; i < this.graph.edges.length; ++i) {
         var edge = this.graph.edges[i];
         var node1 = this.graph.nodes[edge.index[0]];
@@ -353,18 +383,6 @@ GraphAnnotator.prototype._renderGraph = function() {
             continue;
         if (node1.position && node2.position) {
             if (this.fill && node3 && node3.position) {
-                context.lineWidth = 1;
-                context.strokeStyle = formatRGB(edge.color || this.edgeColor);
-                context.fillStyle = formatRGB(edge.color || this.edgeColor);
-                context.beginPath();
-                //context.moveTo(node1.position[0], node1.position[1]);
-                context.moveTo(node1.position[0] * ratio, node1.position[1] * ratio);
-                //context.lineTo(node2.position[0], node2.position[1]);
-                context.lineTo(node2.position[0] * ratio, node2.position[1] * ratio);
-                context.lineTo(node3.position[0] * ratio, node3.position[1] * ratio);
-                context.closePath();
-                context.fill();
-                context.stroke();
             } else {
                 context.lineWidth = edge.lineWidth || this.lineWidth;
                 context.strokeStyle = formatRGB(edge.color || this.edgeColor);
