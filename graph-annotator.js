@@ -353,6 +353,8 @@ GraphAnnotator.prototype._renderGraph = function() {
             var node2 = this.graph.nodes[edge.index[1]];
             if (node1.position === undefined || node2.position === undefined)
                 continue;
+            if ( this.hide_inactive && ! (node1.active && node2.active) )
+                continue;
             if (node1.position && node2.position) {
                 if (node1 !== last_node) {
                     if (last_node != null) {
@@ -381,15 +383,15 @@ GraphAnnotator.prototype._renderGraph = function() {
         var node3 = this.graph.nodes[edge.offset];
         if (node1.position === undefined || node2.position === undefined)
             continue;
+        if ( this.hide_inactive && ! (node1.active && node2.active) )
+            continue;
         if (node1.position && node2.position) {
             if (this.fill && node3 && node3.position) {
             } else {
                 context.lineWidth = edge.lineWidth || this.lineWidth;
                 context.strokeStyle = formatRGB(edge.color || this.edgeColor);
                 context.beginPath();
-                //context.moveTo(node1.position[0], node1.position[1]);
                 context.moveTo(node1.position[0] * ratio, node1.position[1] * ratio);
-                //context.lineTo(node2.position[0], node2.position[1]);
                 context.lineTo(node2.position[0] * ratio, node2.position[1] * ratio);
                 context.closePath();
                 context.stroke();
@@ -399,15 +401,11 @@ GraphAnnotator.prototype._renderGraph = function() {
     for (i = 0; i < this.graph.nodes.length; ++i) {
         var node = this.graph.nodes[i];
         if (node.position) {
+            if (this.hide_inactive && ! node.active)
+                continue;
             context.lineWidth = node.lineWidth || this.lineWidth;
             context.strokeStyle = formatRGB(node.color || this.nodeColor);
             context.beginPath();
-            //context.arc(node.position[0],
-            //            node.position[1],
-            //            node.diameter || this.nodeDiameter,
-            //            0,
-            //            Math.PI*2,
-            //            false);
             context.arc(node.position[0] * ratio,
                 node.position[1] * ratio,
                 node.diameter || this.nodeDiameter,
