@@ -420,12 +420,16 @@ GraphAnnotator.prototype._renderGraph = function() {
 
 // Get a mouse position.
 GraphAnnotator.prototype._getPosition = function(event) {
-    var x = event.pageX - this.container.offsetLeft + this.container.scrollLeft,
-        y = event.pageY - this.container.offsetTop + this.container.scrollTop;
+    //var x = event.pageX - this.container.offsetLeft + this.container.scrollLeft,
+    //    y = event.pageY - this.container.offsetTop + this.container.scrollTop;
+    var x = event.offsetX;
+        y = event.offsetY;
     x = Math.max(Math.min(x, this.canvas.width - 1), 0);
     y = Math.max(Math.min(y, this.canvas.height - 1), 0);
     //return [x, y];
-    return [x / this.ratio, y / this.ratio];
+    x = x / this.ratio;
+    y = y / this.ratio;
+    return [x, y];
 };
 
 // Update a node.
