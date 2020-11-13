@@ -84,7 +84,7 @@
 //       nodes: [{}, {}, ...],
 //       edges: [{index: [0, 1]}, {index: [1, 2]}, ...]
 //     }
-GraphAnnotator = function(imageURL, options) {
+let GraphAnnotator = function(imageURL, options) {
     options = options || {};
     this.graph = options.graph || {nodes: [{}, {}], edges: [{index: [0, 1]}]};
     this.lineWidth = options.lineWidth || 3;
@@ -279,7 +279,11 @@ GraphAnnotator.prototype._initializeEvents = function(options) {
         if (event.button != 0) return;
         //if (event.ctrlKey) return;
         if (mousestatus === true) {
-            _this._updateNode(event, currentNode);
+            if (event.target == _this.canvas) {
+                // キャンバス上でマウスリリースされた場合のみ座標を更新
+                // (キャンバス外のオブジェクト上でリリースされた場合は点を動かすべきでない)
+                _this._updateNode(event, currentNode);
+            }
             mousestatus = false;
             document.onselectstart = function() { return true; };
             options.onchange.call(_this, currentNode);
@@ -420,13 +424,10 @@ GraphAnnotator.prototype._renderGraph = function() {
 
 // Get a mouse position.
 GraphAnnotator.prototype._getPosition = function(event) {
-    //var x = event.pageX - this.container.offsetLeft + this.container.scrollLeft,
-    //    y = event.pageY - this.container.offsetTop + this.container.scrollTop;
     var x = event.offsetX;
         y = event.offsetY;
     x = Math.max(Math.min(x, this.canvas.width - 1), 0);
     y = Math.max(Math.min(y, this.canvas.height - 1), 0);
-    //return [x, y];
     x = x / this.ratio;
     y = y / this.ratio;
     return [x, y];
