@@ -248,7 +248,7 @@ GraphAnnotator.prototype._initializeEvents = function(options) {
     var _this = this,
         mousestatus = false,
         currentNode = null,
-        pisition = null;
+        position = null;
     this.canvas.addEventListener('mousedown', function(event) {
         if (event.button != 0) return;
         if (event.ctrlKey) return;
@@ -273,6 +273,12 @@ GraphAnnotator.prototype._initializeEvents = function(options) {
                 options.onmove.call(_this, currentNode, position);
             }
             _this._updateNode(event, currentNode);
+        } else {
+            if (options.onhover) {
+                position = _this._getPosition(event);
+                options.onhover.call(_this, position);
+            }
+            _this._updateNode(event, currentNode);
         }
     });
     window.addEventListener('mouseup', function(event) {
@@ -292,8 +298,8 @@ GraphAnnotator.prototype._initializeEvents = function(options) {
     });
 };
 
-// Find and update the current node.
-GraphAnnotator.prototype._findNode = function(position) {
+// 最も近いノードを見つける
+GraphAnnotator.prototype._findNearestNode = function(position) {
     var candidate = null,
         i;
     if (position) {
@@ -305,17 +311,36 @@ GraphAnnotator.prototype._findNode = function(position) {
                 continue;
             }
             if (node.position) {
-                var nodePosition = this.graph.nodes[i].position,
+                //var nodePosition = this.graph.nodes[i].position,
+                var nodePosition = node.position,
                     distance = Math.sqrt(
                         Math.pow(nodePosition[0] - position[0], 2) +
                         Math.pow(nodePosition[1] - position[1], 2));
                 distance = distance * this.ratio;
-                if (distance <= this.hitDistance && distance <= minDistance) {
+                if (distance <= minDistance) {
                     minDistance = distance;
                     candidate = i;
                 }
             }
         }
+    }
+    return candidate;
+};
+
+
+// Find and update the current node.
+GraphAnnotator.prototype._findNode = function(position) {
+    var candidate = null;
+    candidate = this._findNearestNode(position);
+    if (candidate !== null) {
+        var node = this.graph.nodes[candidate];
+        var nodePosition = node.position;
+        var distance = Math.sqrt(
+            Math.pow(nodePosition[0] - position[0], 2) +
+            Math.pow(nodePosition[1] - position[1], 2)
+        );
+        if (distance <= this.hitDistance) {} // OK
+        else { candidate = null; }
     }
     if (candidate === null) {
         // Find the unfinished node.
