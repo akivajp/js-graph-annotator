@@ -299,7 +299,7 @@ GraphAnnotator.prototype._initializeEvents = function(options) {
 };
 
 // 最も近いノードを見つける
-GraphAnnotator.prototype._findNearestNode = function(position) {
+GraphAnnotator.prototype._findNearestNode = function(position, validAttributeName, nonFalseAttributeName) {
     var candidate = null,
         i;
     if (position) {
@@ -307,7 +307,9 @@ GraphAnnotator.prototype._findNearestNode = function(position) {
         var minDistance = Infinity;
         for (i = 0; i < this.graph.nodes.length; ++i) {
             var node = this.graph.nodes[i];
-            if (node.active == false) {
+            if (validAttributeName && node[validAttributeName]) {} // OK
+            else if (nonFalseAttributeName && node[nonFalseAttributeName] != false) {} // OK
+            else {
                 continue;
             }
             if (node.position) {
@@ -331,7 +333,9 @@ GraphAnnotator.prototype._findNearestNode = function(position) {
 // Find and update the current node.
 GraphAnnotator.prototype._findNode = function(position) {
     var candidate = null;
-    candidate = this._findNearestNode(position);
+    //candidate = this._findNearestNode(position);
+    //candidate = this._findNearestNode(position, 'active');
+    candidate = this._findNearestNode(position, null, 'active');
     if (candidate !== null) {
         var node = this.graph.nodes[candidate];
         var nodePosition = node.position;
