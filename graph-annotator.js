@@ -343,6 +343,7 @@ GraphAnnotator.prototype._findNode = function(position) {
             Math.pow(nodePosition[0] - position[0], 2) +
             Math.pow(nodePosition[1] - position[1], 2)
         );
+        distance = distance * this.ratio;
         if (distance <= this.hitDistance) {} // OK
         else { candidate = null; }
     }
